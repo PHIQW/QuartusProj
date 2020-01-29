@@ -52,36 +52,34 @@ module ALU(ALUout,A,B,key);
 	output reg [7:0] ALUout;
 	
 	wire [7:0] wirec0, wirec1, wirec2, wirec3, wirec4, wirec5;
+	wire [4:0] rippleResult;
+	wire andResult, orResult;
 	
 	//case 0:ripple adder
-	assign wirec0[7:5] = 3'b000;
+	assign wirec0 = {3'b000, rippleResult};
 	rippleCarryAdder4Bit my_4bitAdder(
-								  .S(wirec0[3:0]),
-								  .cout(wirec0[4]),
+								  .S(rippleResult[3:0]),
+								  .cout(rippleResult[4]),
 								  .A(A[3:0]),
 								  .B(B[3:0]),
 								  .cin(1'b0)
-								  );
-								  
+								  );							  
   //case 1: verilog + operator
-	assign wirec1[7:5] = 4'b000;
-	assign wirec1[4:0] = A+B;//+adder
+	assign wirec1 = {4'b000 , A+B};
 	
 	//case 2: or upper, xor lower
-	assign wirec2[7:4] = A|B;
-	assign wirec2[3:0] = A^B;//
+	assign wirec2 = {A|B, A^B};
 	
 	//case3: at least 1 value 1
-	assign wirec3[7:1] = 7'b0000000;
-	or(wirec3[0],A,B);
+	assign wirec3 = {7'b0000000, andResult};
+	or(andResult,A,B);
 	
 	//case4: all values 1
-	assign wirec4[7:1] = 7'b0000000;
-	and(wirec4[0],A,B);
+	assign wirec4 = {7'b0000000, orResult};
+	and(orResult,A,B);
 	
 	//case5: A upper B lower
-	assign wirec5[7:4] = A[3:0];
-	assign wirec5[3:0] = B[3:0];
+	assign wirec5 = {A, B};
 	
 	always @(*)
 	begin
@@ -92,7 +90,7 @@ module ALU(ALUout,A,B,key);
 			3'b100: ALUout = wirec3;//at least 1 value 1
 			3'b101: ALUout = wirec4;//All value 1
 			3'b110: ALUout = wirec5;//A upper, b lower
-			default: ALUout[7:0] = 8'b00000000; //default 0
+			default: ALUout = 8'b00000000; //default 0
 		endcase
 	end
 endmodule
