@@ -11,11 +11,14 @@ module part1(LEDR, SW);
         );
 endmodule
 
+//selects 1 bit of output from input(or default) from 3bit selector
 module mux7to1(out, muxInput, muxSelect);
 	input [6:0] muxInput;
 	input [2:0] muxSelect;
-	output reg out;
+	output reg out;//reg is output for the cases
 	
+	//declare block with sensitivity(*)
+	//so any changes to any variable updates the cases
 	always @(*)
 	begin
 		case(muxSelect[2:0])
@@ -26,7 +29,7 @@ module mux7to1(out, muxInput, muxSelect);
 			3'b100: out = muxInput[4];
 			3'b101: out = muxInput[5];
 			3'b110: out = muxInput[6];
-			default: out = 1'b0;
+			default: out = 1'b0;	//always have a default
 		endcase
 	end
 endmodule

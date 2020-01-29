@@ -13,6 +13,7 @@
 //        );
 //endmodule
 
+//Adds a and b with modifier cin
 module fullAdder(s,cout,a,b,cin);
 	input a,b;
 	input cin;
@@ -33,6 +34,7 @@ module fullAdder(s,cout,a,b,cin);
 	
 endmodule
 
+//strings 4 full adders along with the the carry values
 module rippleCarryAdder4Bit(S, cout, A, B, cin);
 	input [3:0] A,B;
 	input cin;
@@ -42,6 +44,7 @@ module rippleCarryAdder4Bit(S, cout, A, B, cin);
 	
 	wire [2:0] carryWire;
 	
+	//ripple carry
 	fullAdder add0(
 				.s(S[0]),
 				.cout(carryWire[0]),
