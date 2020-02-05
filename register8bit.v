@@ -1,4 +1,4 @@
-module register8bit(q, d, clock, reset_n,);
+module register8bit(q, d, clock, reset_n);
 	input [7:0] d;
 	input clock, reset_n;
 	output reg [7:0] q;
