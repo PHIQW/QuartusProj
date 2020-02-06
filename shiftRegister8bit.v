@@ -1,7 +1,8 @@
 `timescale 1ns / 1ns // `timescale time_unit/time_precision
 
-module part2(LEDR, SW);
+module part2(LEDR, SW, KEY);
     input [17:0] SW;
+	 input [3:0] KEY;
     output [9:0] LEDR;
 
     shiftRegister8bit my_shiftR8(
@@ -10,7 +11,7 @@ module part2(LEDR, SW);
         .load_n(SW[15]),
         .ShiftRight(SW[16]),
 		  .ASR(SW[17]),
-		  .clk(SW[10]),
+		  .clk(KEY[0]),
 		  .reset_n(SW[9])
         );
 endmodule

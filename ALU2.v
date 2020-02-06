@@ -1,10 +1,11 @@
 `timescale 1ns / 1ns
 
-module part1(LEDR, SW,HEX0,HEX1,HEX2,HEX3,HEX4,HEX5);
+module part1(LEDR, SW,HEX0,HEX4,HEX5, KEY);
     input [17:0] SW;
+	 input [3:0] KEY;
 	 
     output [9:0] LEDR;
-	 output [7:0] HEX0, HEX1, HEX2, HEX3, HEX4, HEX5;
+	 output [7:0] HEX0, HEX4, HEX5;
 	 
 	 wire [7:0] wireALUout;
 	 wire [7:0] reg8out;
@@ -25,29 +26,29 @@ module part1(LEDR, SW,HEX0,HEX1,HEX2,HEX3,HEX4,HEX5);
 			.hex4(HEX4[7:0]),
 			.hex5(HEX5[7:0]),
 			.A(SW[3:0]),
-			.B(reg8out[3:0]),
+//			.B(reg8out[3:0]),
 			.ALUout(reg8out)
 			);
 			
 	register8bit my_reg(
 			.q(reg8out[7:0]),
 			.d(wireALUout[7:0]),
-			.clock(SW[8]),
+			.clock(KEY[0]),
 			.reset_n(SW[9])
 			);
 endmodule
 
 //for displaying the output of ALU processor
-module lightDisplays(outLEDs, hex0, hex1, hex2, hex3, hex4, hex5, A, B, ALUout);
-	input [3:0] A, B;
+module lightDisplays(outLEDs, hex0, hex4, hex5, A, ALUout);
+	input [3:0] A;
 	input [7:0] ALUout;
-	output [7:0] outLEDs, hex0, hex1, hex2, hex3, hex4, hex5;
+	output [7:0] outLEDs, hex0, hex4, hex5;
 	
 	assign outLEDs = ALUout;
-	hex_display hx0(.IN(B),.OUT(hex0));
-	hex_display hx1(.IN(4'b0000),.OUT(hex1));
-	hex_display hx2(.IN(A),.OUT(hex2));
-	hex_display hx3(.IN(4'b0000),.OUT(hex3));
+	hex_display hx0(.IN(A),.OUT(hex0));
+//	hex_display hx1(.IN(4'b0000),.OUT(hex1));
+//	hex_display hx2(.IN(A),.OUT(hex2));
+//	hex_display hx3(.IN(4'b0000),.OUT(hex3));
 	hex_display hx4(.IN(ALUout[3:0]),.OUT(hex4));
 	hex_display hx5(.IN(ALUout[7:4]),.OUT(hex5));
 	
@@ -65,7 +66,7 @@ module ALU2(ALUout,A,B,key);
 	wire andResult, orResult;
 	
 	//case 0:ripple adder
-	assign wirec0 = {3'b000, rippleResult};
+	assign wirec0 = rippleResult;
 	rippleCarryAdder4Bit my_4bitAdder(
 								  .S(rippleResult[3:0]),
 								  .cout(rippleResult[4]),
