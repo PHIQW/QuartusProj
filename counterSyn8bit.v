@@ -11,7 +11,7 @@ module part1(LEDR, SW, KEY, HEX0, HEX1);
     counterSyn8bit my_SynchonousCounter8Bit(
         .Q(counterOut),
         .enable(SW[1]),
-        .clock(KEY[0]|KEY[1]|KEY[2]|KEY[3]),
+        .clock(KEY[1]),
         .clear_b(SW[0])
         );
 		  
@@ -21,7 +21,7 @@ module part1(LEDR, SW, KEY, HEX0, HEX1);
 		 );
 	 
 	 hex_display outUpper(
-		 .IN(counterOut[7:0]),
+		 .IN(counterOut[7:4]),
 		 .OUT(HEX1)
 		 );
 	 

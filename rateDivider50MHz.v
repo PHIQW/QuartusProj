@@ -18,7 +18,7 @@
 //			
 //	counter4bit my_slowedHexCount(
 //		.q(hexCount),
-//		.clock(CLOCK_50),
+//		.clock(dived),
 //		.Clear_b(SW[9]),
 //		.Enable(SW[8])
 //		);
@@ -32,22 +32,21 @@
 module rateDivider50MHz(divOut, enable, digitControl, clock50M, clear_b);
 		input enable, clock50M, clear_b;
 		input [1:0] digitControl;
-		
 		output divOut;
-		reg [27:0] count;
 		
-		assign divOut = ~(|count);
+		reg [27:0] count;
+	
+		assign divOut = (count == 28'b0) ? 1 : 0;
 		
 		always @(posedge clock50M)
 		begin
 			if((clear_b == 1'b0) || (count == 0))
 			begin
 				case(digitControl)
-					2'b00: count <= 28'd0;
+					2'b00: count <= 28'd24999999;
 					2'b01: count <= 28'd49999999;
 					2'b10: count <= 28'd99999999;
 					2'b11: count <= 28'd199999999;
-					default: count <= 28'd199999999;
 				endcase
 			end
 			else if(enable == 1'b1)
@@ -59,17 +58,12 @@ endmodule
 module counter4bit(q, clock, Clear_b, Enable);
 	input clock, Clear_b, Enable;
 	output reg [3:0] q; // declare q
-//	wire [3:0] d; // declare d
 
-	always @(posedge clock) // triggered every time clock rises
+	always @(posedge clock, negedge Clear_b) // triggered every time clock rises
 	begin
 		if (Clear_b == 1'b0) // when Clear_b is 0...
-			q <= 0; // set q to 0
-//		else if (ParLoad == 1'b1) // ...otherwise, check if parallel load
-//			q <= d; // load d
-		else if (q == 4'b1111) // ...otherwise if q is the maximum counter value
-			q <= 0; // reset q to 0
-		else if (Enable == 1'b1) // ...otherwise update q (only when Enable is 1)
+			q <= 4'b0000; // set q to 0
+		else if (Enable == 1) // ...otherwise update q (only when Enable is 1)
 			q <= q + 1'b1; // increment q
 			// q <= q - 1'b1; // alternatively, decrement q
 	end
